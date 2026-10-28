@@ -421,7 +421,7 @@ def create_tables():
 # The OPTIONS catch-all ensures Render's proxy never drops
 # preflight requests before FastAPI can respond.
 ALLOWED_ORIGINS = [
-    "https://panache-workforce-management.vercel.app",
+    "https://hrms-psi-blush.vercel.app",
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:5500",
@@ -461,10 +461,9 @@ async def preflight_handler(rest_of_path: str, request: Request):
             "Vary":                             "Origin",
         },
     )
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://neondb_owner:npg_ceN7gVxPlpA5@ep-rough-wind-atil7hvd-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set (add your Neon connection string in Render > Environment)")
 
 engine = create_engine(
     DATABASE_URL,
@@ -628,7 +627,7 @@ def login(data: LoginRequest):
 
 # ── PASSWORD RESET ─────────────────────────────────────────
 # Frontend origin the reset link points back to.
-FRONTEND_URL = "https://panache-workforce-management.vercel.app"
+FRONTEND_URL = "https://hrms-psi-blush.vercel.app"
 
 
 @app.post("/forgot-password")
